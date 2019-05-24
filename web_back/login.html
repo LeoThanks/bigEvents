@@ -9,9 +9,27 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
+    <!-- 静态框 -->
+
+    <div class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">提示信息</h4>
+                </div>
+                <div class="modal-body">
+                    <p>账号密码错误</p>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <div class="main_wrap">
         <div class="header">
             <a href="#" class="logo"><img src="images/logo.png" alt=""></a>
@@ -29,8 +47,54 @@
             </form>
         </div>
 
-    </div> 
+
+
+    </div>
 
 </body>
 
+<script src="./js/jquery-1.12.4.min.js"></script>
+<script src="./js/bootstrap/js/bootstrap.min.js"></script>
+
 </html>
+<script>
+    // 找到两个输入框,
+    $(function () {
+        // 先阻止一下表格的默认事件
+        $('.login_form').submit(function (e) {
+            e.preventDefault();
+        })
+        // 给登录按钮添加点击事件
+        $('.input_sub').click(function () {
+            var user_name = $('.input_txt').val();
+            var password = $('.input_pass').val();
+            if (user_name.trim().length > 0 && password.trim().length > 0) {
+                // 如果输入的内容不为空,则通过接口向服务器发送请求报文,判断登录的用户名和密码是都正确
+                $.ajax({
+                    type: 'post',
+                    url: 'https://autumnfish.cn/big/admin/login',
+                    data: {
+                        user_name: user_name,
+                        password: password
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        // console.log(response);
+                        if (response.code == 200) {
+                            // 登录成功,去向首页
+                            window.location.href = './index.html';
+                        } else if (response.code == 400) {
+                            // 登录失败,提示密码不正确
+                            $('.modal-body p').text('用户名或密码输入错误~');
+                            $('.modal').modal();
+                        }
+                    }
+                })
+            } else {
+                // 提示密码不能为空
+                $('.modal-body p').text('用户名或密码不能为空~');
+                $('.modal').modal();
+            }
+        })
+    })
+</script>
