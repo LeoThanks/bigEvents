@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 
 </head>
 
@@ -24,19 +25,19 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control userName" value="李思思">
+                        <input type="text" class="form-control username" name="username" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control nickName" value="思思">
+                        <input type="text" class="form-control nickname" name="nickname" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control userEmail" value="lisisi@126.com">
+                        <input type="text" class="form-control email" name="email" value="lisisi@126.com">
                     </div>
                 </div>
 
@@ -51,7 +52,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-4">
-                        <input type="password" class="form-control userPsd" value="12345678">
+                        <input type="password" class="form-control password" name="password" value="12345678">
                     </div>
                 </div>
 
@@ -65,26 +66,64 @@
         </div>
     </div>
 
+    <!-- 模态框 -->
+    <div class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <script>
         // 监控exampleInputFile的change事件
         $(function () {
-            $('#exampleInputFile').change(function (e) {
-                // var url = URL.createObjectURL(this.files[0]);
-                // $(this).prev('img').attr('src', url);
-                // 点击修改个人信息
-
+            // 获取后台的数据,更新个人中心的内容
+            $.ajax({
+                url: 'https://autumnfish.cn/big/admin/userinfo_get',
+                type: 'get',
+                success: function (response) {
+                    // console.log(response)
+                    // 遍历data,给表格input元素设置值
+                    for (var key in response.data) {
+                        console.log(key)
+                        console.log(response.data[key])
+                        $('.article_form input.' + key + '').val(response.data[key]);
+                    }
+                    // 单独更改图片
+                    $('#exampleInputFile').prev('img').attr('src', response.data.user_pic);
+                }
             })
             // 阻止表单的默认事件
             $('.article_form').submit(function (e) {
                 e.preventDefault();
+            });
+            // 修改替换图片的地址,每个type=file都有一个files属性,是伪数组,保存了选择的文件,type= file添加multiple可以选择多个文件
+            // 监控change事件,监控value的值改变的时候触发该事件
+            $('#exampleInputFile').change(function () {
+                var url = URL.createObjectURL(this.files[0]);
+                $(this).prev('img').attr('src', url);
             })
 
             $('.btn-success').click(function () {
-                var userName = $('.userName').val().trim();
-                var nickName = $('.nickName').val().trim();
-                var userEmail = $('.userEmail').val().trim();
-                var userPsd = $('.userPsd').val().trim();
+                // var userName = $('.userName').val().trim();
+                // var nickName = $('.nickName').val().trim();
+                // var userEmail = $('.userEmail').val().trim();
+                // var userPsd = $('.userPsd').val().trim();
+                // 判断是否为空
                 var dataForm = new FormData($('.article_form')[0]);
+
                 // input标签必须设name属性
                 $.ajax({
                     url: 'https://autumnfish.cn/big/admin/userinfo_edit',
@@ -93,9 +132,17 @@
                     contentType: false,
                     processData: false,
                     success: function (response) {
-                        console.log(response);
+                        // 如果修改成功,弹出提示框,并刷新页面
+                        if (response.code == 200) {
+                            $('.modal').modal();
+                            setInterval(function () {
+
+                                window.location.reload();
+                            }, 500)
+                        }
                     }
                 })
+
             })
         })
     </script>
