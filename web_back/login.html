@@ -13,18 +13,17 @@
 </head>
 
 <body>
-    <!-- 静态框 -->
-
+    <!-- 模态框 -->
     <div class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">提示信息</h4>
+                    <h4 class="modal-title">信息提示</h4>
                 </div>
                 <div class="modal-body">
-                    <p>账号密码错误</p>
+                    <p></p>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -58,18 +57,17 @@
 
 </html>
 <script>
-    // 找到两个输入框,
     $(function () {
-        // 先阻止一下表格的默认事件
+        // 取消表单的默认事件
         $('.login_form').submit(function (e) {
             e.preventDefault();
-        })
-        // 给登录按钮添加点击事件
+        });
+        // 获取输入框的值,并判断是否为空
         $('.input_sub').click(function () {
-            var user_name = $('.input_txt').val();
-            var password = $('.input_pass').val();
-            if (user_name.trim().length > 0 && password.trim().length > 0) {
-                // 如果输入的内容不为空,则通过接口向服务器发送请求报文,判断登录的用户名和密码是都正确
+            var user_name = $('.input_txt').val().trim();
+            var password = $('.input_pass').val().trim();
+            if (user_name.length > 0 && password.length > 0) {
+                // 通过ajax发送请求数据,验证用户名的准确性
                 $.ajax({
                     type: 'post',
                     url: 'https://autumnfish.cn/big/admin/login',
@@ -81,18 +79,18 @@
                     success: function (response) {
                         // console.log(response);
                         if (response.code == 200) {
-                            // 登录成功,去向首页
+                            // 输入正确,转到index页面
                             window.location.href = './index.html';
                         } else if (response.code == 400) {
-                            // 登录失败,提示密码不正确
-                            $('.modal-body p').text('用户名或密码输入错误~');
+                            // 提示密码或用户名输入错误
+                            $('.modal-body p').text('用户名或密码输入错误~~');
                             $('.modal').modal();
                         }
                     }
                 })
             } else {
-                // 提示密码不能为空
-                $('.modal-body p').text('用户名或密码不能为空~');
+                // 提示输入值为空
+                $('.modal-body p').text('用户名或密码不能为空~~');
                 $('.modal').modal();
             }
         })

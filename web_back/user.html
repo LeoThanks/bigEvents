@@ -24,22 +24,22 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control userName" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickName" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control userEmail" value="lisisi@126.com">
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
@@ -49,13 +49,13 @@
                 </div>
 
                 <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
-                        <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
-                        </div>
+                    <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control userPsd" value="12345678">
                     </div>
-               
-    
+                </div>
+
+
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" class="btn btn-success">修改</button>
@@ -64,6 +64,41 @@
             </form>
         </div>
     </div>
+
+    <script>
+        // 监控exampleInputFile的change事件
+        $(function () {
+            $('#exampleInputFile').change(function (e) {
+                // var url = URL.createObjectURL(this.files[0]);
+                // $(this).prev('img').attr('src', url);
+                // 点击修改个人信息
+
+            })
+            // 阻止表单的默认事件
+            $('.article_form').submit(function (e) {
+                e.preventDefault();
+            })
+
+            $('.btn-success').click(function () {
+                var userName = $('.userName').val().trim();
+                var nickName = $('.nickName').val().trim();
+                var userEmail = $('.userEmail').val().trim();
+                var userPsd = $('.userPsd').val().trim();
+                var dataForm = new FormData($('.article_form')[0]);
+                // input标签必须设name属性
+                $.ajax({
+                    url: 'https://autumnfish.cn/big/admin/userinfo_edit',
+                    type: 'post',
+                    data: dataForm,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log(response);
+                    }
+                })
+            })
+        })
+    </script>
 
 </body>
 

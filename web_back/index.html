@@ -25,21 +25,22 @@
                     <h4 class="modal-title">提示信息</h4>
                 </div>
                 <div class="modal-body">
-                    <p>是否退出登录账号</p>
+                    <p>是否确认退出当前账号</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消退出</button>
                     <button type="button" class="btn btn-primary">确认退出</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+
     <div class="sider">
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span>欢迎&nbsp;&nbsp;<i>李思思</i></span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -143,13 +144,27 @@
 
 <script>
     $(function () {
-        // 给退出添加点击事件
+        // 当鼠标点击退出的时候,弹出提示框,并根据选择做出相应的切换
         $('.btn-quit').click(function () {
-            $('.modal').modal()
-        })
-        // 点击确认退出,回到登录界面
+            $('.modal').modal();
+        });
+        // 确认退出,退回登录页面
         $('.btn-primary').click(function () {
             window.location.href = './login.html';
+        })
+        // 到了这个页面,应该更改用户的 显示信息
+        // 获取用户信息的接口在21(倒数)
+        $.ajax({
+            type: 'get',
+            url: 'https://autumnfish.cn/big/admin/userinfo_get',
+            data: {},
+            dataType: 'json',
+            success: function (response) {
+                console.log(response)
+                $('.sider .user_info img').attr('src', response.data.user_pic);
+                $('.sider .user_info span i').text(response.data.username);
+                $('.user_center_link img').attr('src', response.data.user_pic);
+            }
         })
     })
 </script>
